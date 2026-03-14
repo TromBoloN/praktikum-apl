@@ -1,307 +1,253 @@
 #include <iostream>
 #include <string>
-#include <cstdlib>
+#include <iomanip>
+
 using namespace std;
 
-struct dataReview
+struct Review
 {
-    string namaUser;
-    string isiReview;
+    string teksReview;
+    float rating;
+    string reviewer;
 };
 
-struct dataBuku
+struct Buku
 {
-    string judulBuku;
-    string penulisBuku;
-
-    dataReview reviewBuku[10];
-    int jumlahReview = 0;
-};
-
-struct dataUser
-{
-    string nama;
-    string nim;
-    string role;
+    string judul;
+    string penulis;
+    string genre;
+    Review detail;
 };
 
 int main()
 {
-    dataUser akun[100] = {
-        {"arif", "064", "user"},
-        {"admin", "123", "admin"}};
+    struct User
+    {
+        string username;
+        string password;
+    } admin = {"arif", "064"};
 
-    dataBuku daftarBuku[100] = {
-        {"Laskar Pelangi", "Andrea Hirata"},
-        {"Bumi", "Tere Liye"},
-        {"Negeri 5 Menara", "Ahmad Fuadi"},
-        {"Dilan 1990", "Pidi Baiq"},
-        {"Ayat-Ayat Cinta", "Habiburrahman El Shirazy"}};
+    Buku daftarBuku[100] = {
+        {"Harry Potter", "J.K. Rowling", "Fantasy", {"-", 0, "-"}},
+        {"Solo Leveling", "Chugong", "Action", {"-", 0, "-"}},
+        {"Lord of the Rings", "J.R.R Tolkien", "Fantasy", {"-", 0, "-"}},
+        {"The Devotion of Suspect X", "Keigo Higashino", "Crime Fiction", {"-", 0, "-"}},
+        {"Wuthering Heights", "Emily Bronte", "Romance", {"-", 0, "-"}},
+        {"The Metamorphosis", "Franz Kafka", "Absurdist Fiction", {"-", 0, "-"}}};
 
-    int jumlahBuku = 5;
-    int jumlahUser = 2;
+    int jumlahData = 6;
 
-    int pilihanUtama;
-    int pilihanMenu;
-    int percobaanLogin;
-    int indexBuku;
+    string userInput, pwInput;
+    int percobaanLogin = 0;
+    bool loginBerhasil = false;
 
-    string inputNama;
-    string inputNim;
+    while (percobaanLogin < 3)
+    {
+        cout << "=== LOGIN SISTEM REVIEW BUKU ===" << endl;
+        cout << "Masukkan Nama : ";
+        cin >> userInput;
+        cout << "Masukkan NIM : ";
+        cin >> pwInput;
 
-    int indexLogin = -1;
+        if (userInput == admin.username && pwInput == admin.password)
+        {
+            loginBerhasil = true;
+            break;
+        }
+        else
+        {
+            percobaanLogin++;
+            cout << "Login Gagal. Sisa Percobaan: " << 3 - percobaanLogin << "\n"
+                 << endl;
+        }
+    }
+
+    if (!loginBerhasil)
+    {
+        cout << "Melebihi batas login. Program berhenti." << endl;
+        return 0;
+    }
+
+    int pilihan;
 
     while (true)
     {
         system("cls");
-        cout << "\n===== MENU UTAMA =====\n";
-        cout << "1. Login\n";
-        cout << "2. Register\n";
-        cout << "3. Keluar\n";
-        cout << "Pilihan: ";
-        cin >> pilihanUtama;
-        cin.ignore();
-        system("cls");
+        cout << "\n======================================" << endl;
+        cout << "   SISTEM REVIEW BUKU & FANFICTION   " << endl;
+        cout << "======================================" << endl;
+        cout << "1. Tambah Review" << endl;
+        cout << "2. Lihat Review" << endl;
+        cout << "3. Ubah Review" << endl;
+        cout << "4. Hapus Review" << endl;
+        cout << "5. Keluar" << endl;
+        cout << "Pilih Menu 1-5: ";
+        cin >> pilihan;
 
-        if (pilihanUtama == 3)
+        if (pilihan == 5)
         {
+            cout << "Keluar dari sistem." << endl;
             break;
         }
 
-        if (pilihanUtama == 2)
+        switch (pilihan)
         {
-            cout << "\n===== REGISTER USER =====\n";
 
-            cout << "Nama Baru: ";
-            getline(cin, akun[jumlahUser].nama);
+        case 1:
+        {
+            system("cls");
+            cout << "\n==== DAFTAR BUKU TERSEDIA ====" << endl;
 
-            cout << "NIM Baru: ";
-            getline(cin, akun[jumlahUser].nim);
+            for (int i = 0; i < jumlahData; i++)
+            {
+                cout << i + 1 << ". "
+                     << daftarBuku[i].judul
+                     << " - " << daftarBuku[i].penulis
+                     << " (" << daftarBuku[i].genre << ")"
+                     << endl;
+            }
 
-            akun[jumlahUser].role = "user";
-            jumlahUser++;
+            int pilihBuku;
+            cout << "Pilih nomor buku untuk direview: ";
+            cin >> pilihBuku;
+            float rating;
 
-            cout << "\nAkun berhasil dibuat! Silakan login.\n";
-            cout << "Tekan Enter untuk kembali...";
-            cin.get();
-            continue;
+            if (pilihBuku > 0 && pilihBuku <= jumlahData)
+            {
+                cin.ignore();
+
+                cout << "Tulis review : ";
+                getline(cin, daftarBuku[pilihBuku - 1].detail.teksReview);
+
+                cout << "Rating (1-5) : ";
+                cin >> rating;
+                while (rating < 0 || rating > 5)
+                {
+                    cout << "Rating harus antara 0 sampai 5!" << endl;
+                    cout << "Masukkan rating lagi : ";
+                    cin >> rating;
+                }
+
+                daftarBuku[pilihBuku - 1].detail.rating = rating;
+                daftarBuku[pilihBuku - 1].detail.reviewer = userInput;
+                cout << "Review berhasil ditambahkan" << endl;
+            }
+            else
+            {
+                cout << "Pilihan tidak ada" << endl;
+            }
+
+            break;
         }
 
-        if (pilihanUtama == 1)
+        case 2:
         {
-            for (percobaanLogin = 0; percobaanLogin < 3; percobaanLogin++)
+            cout << "\n==== DAFTAR REVIEW ====\n";
+
+            cout << left
+                 << setw(5) << "No"
+                 << setw(25) << "Judul"
+                 << setw(20) << "Penulis"
+                 << setw(12) << "Genre"
+                 << setw(8) << "Rating"
+                 << setw(15) << "Reviewer"
+                 << setw(30) << "Review"
+                 << endl;
+
+            for (int i = 0; i < jumlahData; i++)
             {
-                cout << "\nLOGIN\n";
-
-                cout << "Nama: ";
-                getline(cin, inputNama);
-
-                cout << "NIM: ";
-                getline(cin, inputNim);
-
-                indexLogin = -1;
-
-                for (int i = 0; i < jumlahUser; i++)
-                {
-                    if (inputNama == akun[i].nama &&
-                        inputNim == akun[i].nim)
-                    {
-                        indexLogin = i;
-                        break;
-                    }
-                }
-
-                if (indexLogin != -1)
-                {
-                    system("cls");
-                    break;
-                }
-
-                cout << "Login gagal! Sisa percobaan: "
-                     << 2 - percobaanLogin << endl;
+                cout << left
+                     << setw(5) << i + 1
+                     << setw(25) << daftarBuku[i].judul
+                     << setw(20) << daftarBuku[i].penulis
+                     << setw(12) << daftarBuku[i].genre
+                     << setw(8) << daftarBuku[i].detail.rating
+                     << setw(15) << daftarBuku[i].detail.reviewer
+                     << setw(30) << daftarBuku[i].detail.teksReview
+                     << endl;
             }
+            cout << "\nTekan Enter untuk kembali ke menu...";
+            cin.ignore();
+            cin.get();
+            system("cls");
 
-            if (percobaanLogin == 3)
+            break;
+        }
+
+        case 3:
+        {
+            int indexUpdate;
+
+            cout << "\nNomor buku yang reviewnya ingin diubah: ";
+            cin >> indexUpdate;
+            float rating;
+
+            if (indexUpdate > 0 && indexUpdate <= jumlahData)
             {
-                return 0;
-            }
-
-            do
-            {
-                if (akun[indexLogin].role == "admin")
+                if (daftarBuku[indexUpdate - 1].detail.reviewer == userInput)
                 {
-                    system("cls");
-                    cout << "\n======= MENU ADMIN =======\n";
-                    cout << "1. Tambah Buku\n";
-                    cout << "2. Lihat Buku\n";
-                    cout << "3. Ubah Buku\n";
-                    cout << "4. Hapus Buku\n";
-                    cout << "5. Logout\n";
-                    cout << "Pilihan: ";
-                    cin >> pilihanMenu;
-                    cin.ignore();
-                    cout << "\n";
-
-                    if (pilihanMenu == 1)
-                    {
-                        cout << "Judul Buku: ";
-                        getline(cin, daftarBuku[jumlahBuku].judulBuku);
-
-                        cout << "Penulis Buku: ";
-                        getline(cin, daftarBuku[jumlahBuku].penulisBuku);
-
-                        jumlahBuku++;
-                    }
-
-                    else if (pilihanMenu == 2)
-                    {
-                        cout << "===== Daftar Buku =====\n";
-                        for (int i = 0; i < jumlahBuku; i++)
-                        {
-                            cout << i + 1 << ". "
-                                 << daftarBuku[i].judulBuku
-                                 << " | Karya : "
-                                 << daftarBuku[i].penulisBuku << endl;
-                        }
-
-                        cout << "\nTekan Enter untuk lanjut...";
-                        cin.get();
-                    }
-
-                    else if (pilihanMenu == 3)
-                    {
-                        for (int i = 0; i < jumlahBuku; i++)
-                        {
-                            cout << i + 1 << ". "
-                                 << daftarBuku[i].judulBuku << endl;
-                        }
-
-                        cout << "Nomor Buku: ";
-                        cin >> indexBuku;
-                        cin.ignore();
-                        indexBuku--;
-
-                        cout << "Judul Baru: ";
-                        getline(cin, daftarBuku[indexBuku].judulBuku);
-                    }
-
-                    else if (pilihanMenu == 4)
-                    {
-                        for (int i = 0; i < jumlahBuku; i++)
-                        {
-                            cout << i + 1 << ". "
-                                 << daftarBuku[i].judulBuku << endl;
-                        }
-
-                        cout << "Nomor Buku: ";
-                        cin >> indexBuku;
-                        cin.ignore();
-                        indexBuku--;
-
-                        for (int i = indexBuku; i < jumlahBuku - 1; i++)
-                        {
-                            daftarBuku[i] = daftarBuku[i + 1];
-                        }
-
-                        jumlahBuku--;
-                    }
-
-                    else
-                    {
-                        cout << "Input tidak valid\n";
-                        cin.get();
-                    }
-                }
-
-                else if (akun[indexLogin].role == "user")
-                {
-                    system("cls");
-                    cout << "\n======= MENU USER =======\n";
-                    cout << "1. Isi Review\n";
-                    cout << "2. Lihat Semua Review\n";
-                    cout << "3. Logout\n";
-                    cout << "Pilihan: ";
-                    cin >> pilihanMenu;
                     cin.ignore();
 
-                    if (pilihanMenu == 1)
+                    cout << "Review baru : ";
+                    getline(cin, daftarBuku[indexUpdate - 1].detail.teksReview);
+
+                    cout << "Rating baru : ";
+                    cin >> rating;
+                    while (rating < 0 || rating > 5)
                     {
-                        for (int i = 0; i < jumlahBuku; i++)
-                        {
-                            cout << i + 1 << ". "
-                                 << daftarBuku[i].judulBuku << endl;
-                        }
-
-                        cout << "Pilih Nomor Buku: ";
-                        cin >> indexBuku;
-                        cin.ignore();
-
-                        if (indexBuku < 1 || indexBuku > jumlahBuku)
-                        {
-                            cout << "Nomor buku tidak ada!\n";
-                            cin.get();
-                            continue;
-                        }
-
-                        indexBuku--;
-
-                        int r = daftarBuku[indexBuku].jumlahReview;
-
-                        cout << "Nama: ";
-                        getline(cin, daftarBuku[indexBuku].reviewBuku[r].namaUser);
-
-                        cout << "Review: ";
-                        getline(cin, daftarBuku[indexBuku].reviewBuku[r].isiReview);
-
-                        daftarBuku[indexBuku].jumlahReview++;
+                        cout << "Rating harus antara 0 sampai 5!" << endl;
+                        cout << "Masukkan rating lagi : ";
+                        cin >> rating;
                     }
 
-                    else if (pilihanMenu == 2)
-                    {
-                        system("cls");
-
-                        for (int i = 0; i < jumlahBuku; i++)
-                        {
-                            cout << i + 1 << ". "
-                                 << daftarBuku[i].judulBuku << endl;
-
-                            if (daftarBuku[i].jumlahReview == 0)
-                            {
-                                cout << " Belum ada review.\n";
-                            }
-                            else
-                            {
-                                for (int j = 0; j < daftarBuku[i].jumlahReview; j++)
-                                {
-                                    cout << " User: "
-                                         << daftarBuku[i].reviewBuku[j].namaUser << endl;
-
-                                    cout << " Review: "
-                                         << daftarBuku[i].reviewBuku[j].isiReview << endl;
-                                }
-                            }
-
-                            cout << "======================================\n";
-                        }
-
-                        cout << "Tekan Enter untuk kembali...";
-                        cin.get();
-                    }
-
-                    else if (pilihanMenu == 3)
-                    {
-                        break;
-                    }
-
-                    else
-                    {
-                        cout << "Input tidak valid\n";
-                        cin.get();
-                    }
+                    daftarBuku[indexUpdate - 1].detail.rating = rating;
+                    cout << "Review berhasil diperbarui." << endl;
                 }
+                else
+                {
+                    cout << "Hanya bisa menghapus rating sendiri" << endl;
+                }
+            }
+            else
+            {
+                cout << "Nomor tidak valid." << endl;
+            }
 
-            } while ((akun[indexLogin].role == "admin" && pilihanMenu != 5) ||
-                     (akun[indexLogin].role == "user" && pilihanMenu != 3));
+            break;
+        }
+
+        case 4:
+        {
+            int indexHapus;
+
+            cout << "\nNomor data yang akan dihapus: ";
+            cin >> indexHapus;
+
+            if (indexHapus > 0 && indexHapus <= jumlahData)
+            {
+                if (daftarBuku[indexHapus - 1].detail.reviewer == userInput)
+                {
+                    daftarBuku[indexHapus - 1].detail.teksReview = "-";
+                    daftarBuku[indexHapus - 1].detail.rating = 0;
+                    daftarBuku[indexHapus - 1].detail.reviewer = "-";
+
+                    cout << "Review berhasil dihapus." << endl;
+                }
+                else
+                {
+                    cout << "Hanya bisa menghapus review sendiri." << endl;
+                }
+            }
+            else
+            {
+                cout << "Nomor data tidak ada" << endl;
+            }
+
+            break;
+        }
+
+        default:
+            cout << "Pilihan diketahui" << endl;
         }
     }
 
