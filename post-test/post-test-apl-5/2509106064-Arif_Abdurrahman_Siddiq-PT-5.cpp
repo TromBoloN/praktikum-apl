@@ -87,24 +87,32 @@ void sortRatingAsc(Buku buku[], int n)
 {
     for (int i = 0; i < n - 1; i++)
     {
-        for (int j = 0; j < n - i - 1; j++)
+        int minIndex = i;
+
+        for (int j = i + 1; j < n; j++)
         {
-            if (buku[j].detail.rating > buku[j + 1].detail.rating)
-                swap(buku[j], buku[j + 1]);
+            if (buku[j].detail.rating < buku[minIndex].detail.rating)
+                minIndex = j;
         }
+
+        swap(buku[i], buku[minIndex]);
     }
 }
-
 // 3. Sorting Bebas (Judul ASC)
 void sortJudulAsc(Buku buku[], int n)
 {
-    for (int i = 0; i < n - 1; i++)
+    for (int i = 1; i < n; i++)
     {
-        for (int j = 0; j < n - i - 1; j++)
+        Buku key = buku[i];
+        int j = i - 1;
+
+        while (j >= 0 && buku[j].judul > key.judul)
         {
-            if (buku[j].judul > buku[j + 1].judul)
-                swap(buku[j], buku[j + 1]);
+            buku[j + 1] = buku[j];
+            j--;
         }
+
+        buku[j + 1] = key;
     }
 }
 
