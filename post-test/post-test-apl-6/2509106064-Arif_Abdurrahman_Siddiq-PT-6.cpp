@@ -116,7 +116,6 @@ void sortJudulAsc(Buku *buku, int n)
     }
 }
 
-// Sorting ID ASC untuk binary search
 void sortIdAsc(Buku *buku, int n)
 {
     for (int i = 1; i < n; i++)
